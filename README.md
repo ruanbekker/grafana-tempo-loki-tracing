@@ -1,6 +1,8 @@
 # grafana-tempo-loki-tracing
 Grafana Distributed Tracing Example with: Tempo, Prometheus, Loki, Grafana and Python Flask
 
+![image](https://github.com/ruanbekker/grafana-tempo-loki-tracing/assets/567298/c0431d21-e7df-4d2b-a0f6-f1ed1f222eaf)
+
 ## Getting Started
 
 Boot the stack:
