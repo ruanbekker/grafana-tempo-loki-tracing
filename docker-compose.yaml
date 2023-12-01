@@ -9,6 +9,19 @@ x-logging:
     tag: "{{.Name}}"
 
 services:
+  payment-service:
+    container_name: payment-service
+    build:
+      context: payment_service
+    ports:
+      - 5002:5000
+    networks:
+      - traces
+    labels:
+      logging: "promtail"
+      logging_jobname: "containerlogs"
+    logging: *default-logging
+
   grafana:
     image: grafana/grafana:10.2.2
     container_name: grafana
