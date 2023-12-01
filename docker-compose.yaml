@@ -20,8 +20,6 @@ services:
       - GF_USERS_DEFAULT_THEME=light
     volumes:
       - ./configs/grafana/datasources.yaml:/etc/grafana/provisioning/datasources/provisioning-datasources.yaml:ro
-    depends_on:
-      - tempo
     networks:
       - traces
     logging: *default-logging
