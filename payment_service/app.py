@@ -1,3 +1,4 @@
+import os
 from flask import Flask
 from opentelemetry import trace
 from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExporter
@@ -5,6 +6,9 @@ from opentelemetry.sdk.trace.export import BatchSpanProcessor
 from opentelemetry.instrumentation.flask import FlaskInstrumentor
 from opentelemetry.sdk.resources import SERVICE_NAME, Resource
 from opentelemetry.sdk.trace import TracerProvider
+
+AGENT_HOSTNAME = os.getenv("AGENT_HOSTNAME", "localhost")
+AGENT_PORT = int(os.getenv("AGENT_PORT", "4317"))
 
 app = Flask(__name__)
 
@@ -15,7 +19,8 @@ trace.set_tracer_provider(TracerProvider(
 
 # Set up the OTLP exporter
 otlp_exporter = OTLPSpanExporter(
-    endpoint="tempo:4317",
+    # endpoint="tempo:4317",
+    endpoint=f"{AGENT_HOSTNAME}:{AGENT_PORT}",
     insecure=True
     )
 

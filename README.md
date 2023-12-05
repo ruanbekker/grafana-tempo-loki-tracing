@@ -3,6 +3,11 @@ Grafana Distributed Tracing Example with: Tempo, Prometheus, Loki, Grafana and P
 
 ![image](https://github.com/ruanbekker/grafana-tempo-loki-tracing/assets/567298/c0431d21-e7df-4d2b-a0f6-f1ed1f222eaf)
 
+## About
+
+This is a example with auto instrumentation using opentelemetry:
+- https://opentelemetry.io/docs/instrumentation/python/automatic/
+
 ## Getting Started
 
 Boot the stack:
@@ -68,3 +73,5 @@ With `span.set_attribute` we can enrich some of the visuals:
 Produces:
 
 ![image](https://github.com/ruanbekker/grafana-tempo-loki-tracing/assets/567298/1c3ecd1e-fa48-4dc5-8caf-ce7a244c6fb3)
+
+

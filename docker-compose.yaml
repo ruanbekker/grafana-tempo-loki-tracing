@@ -10,9 +10,12 @@ x-logging:
 
 services:
   order-service:
+    platform: linux/amd64
     container_name: order-service
     build:
       context: order_service
+    environment:
+      - AGENT_HOSTNAME=otel-collector
     ports:
       - 5001:5000
     networks:
@@ -23,9 +26,12 @@ services:
     logging: *default-logging
 
   payment-service:
+    platform: linux/amd64
     container_name: payment-service
     build:
       context: payment_service
+    environment:
+      - AGENT_HOSTNAME=otel-collector
     ports:
       - 5002:5000
     networks:
@@ -36,6 +42,7 @@ services:
     logging: *default-logging
 
   grafana:
+    platform: linux/amd64
     image: grafana/grafana:10.2.2
     container_name: grafana
     ports:
@@ -53,6 +60,7 @@ services:
     logging: *default-logging
 
   tempo:
+    platform: linux/amd64
     image: grafana/tempo:2.3.1
     container_name: tempo
     ports:
@@ -69,6 +77,7 @@ services:
     logging: *default-logging
 
   promtail:
+    platform: linux/amd64
     image:  grafana/promtail:2.9.2
     container_name: promtail
     volumes:
@@ -83,6 +92,7 @@ services:
     logging: *default-logging
 
   loki:
+    platform: linux/amd64
     image: grafana/loki:2.9.2
     container_name: loki
     ports:
@@ -93,6 +103,7 @@ services:
     logging: *default-logging
 
   prometheus:
+    platform: linux/amd64
     image: prom/prometheus:v2.48.0
     container_name: prometheus
     command:
@@ -107,6 +118,19 @@ services:
       - traces
     logging: *default-logging
 
+  otel-collector:
+    platform: linux/amd64
+    image: otel/opentelemetry-collector:0.90.1
+    container_name: otel-collector
+    ports:
+      - 6317:6317
+    volumes:
+      - ./configs/otel/otel-collector.yaml:/config/otel-collector.yaml
+    command:
+      - --config=/config/otel-collector.yaml
+    networks:
+      - traces
+    logging: *default-logging
 
 networks:
   traces:

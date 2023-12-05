@@ -1,3 +1,4 @@
+import os
 import random
 import requests
 from flask import Flask
@@ -11,6 +12,9 @@ from opentelemetry.sdk.trace.export import BatchSpanProcessor
 from opentelemetry.sdk.resources import SERVICE_NAME, Resource
 from opentelemetry.sdk.trace import TracerProvider
 
+AGENT_HOSTNAME = os.getenv("AGENT_HOSTNAME", "localhost")
+AGENT_PORT = int(os.getenv("AGENT_PORT", "4317"))
+
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///example.db'
 db = SQLAlchemy(app)
@@ -22,7 +26,7 @@ trace.set_tracer_provider(TracerProvider(
 
 # Set up the OTLP exporter
 otlp_exporter = OTLPSpanExporter(
-    endpoint="tempo:4317",
+    endpoint=f"{AGENT_HOSTNAME}:{AGENT_PORT}",
     insecure=True
 )
 
@@ -81,7 +85,7 @@ def list_payments():
 
     with tracer.start_as_current_span("list_payments"):
         # Make a traced request to the Payment service
-        response = requests.get("http://192.168.0.20:5008/process_payment")
+        response = requests.get("http://192.168.0.63:5002/process_payment")
 
     return "Payments listed", 200
 
