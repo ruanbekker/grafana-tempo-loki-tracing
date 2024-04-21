@@ -36,7 +36,7 @@ services:
     logging: *default-logging
 
   grafana:
-    image: grafana/grafana:10.2.2
+    image: grafana/grafana:10.4.2
     container_name: grafana
     ports:
       - 3000:3000
@@ -69,7 +69,7 @@ services:
     logging: *default-logging
 
   promtail:
-    image:  grafana/promtail:2.9.2
+    image:  grafana/promtail:2.9.7
     container_name: promtail
     volumes:
       - ./configs/promtail/promtail.yaml:/etc/promtail/docker-config.yaml
@@ -83,7 +83,7 @@ services:
     logging: *default-logging
 
   loki:
-    image: grafana/loki:2.9.2
+    image: grafana/loki:2.9.7
     container_name: loki
     ports:
       - 3100:3100
@@ -93,7 +93,7 @@ services:
     logging: *default-logging
 
   prometheus:
-    image: prom/prometheus:v2.48.0
+    image: prom/prometheus:v2.51.1
     container_name: prometheus
     command:
       - --config.file=/etc/prometheus.yaml
