@@ -81,7 +81,7 @@ def list_payments():
 
     with tracer.start_as_current_span("list_payments"):
         # Make a traced request to the Payment service
-        response = requests.get("http://192.168.0.20:5008/process_payment")
+        response = requests.get("http://payment-service:5000/process_payment")
 
     return "Payments listed", 200
 
