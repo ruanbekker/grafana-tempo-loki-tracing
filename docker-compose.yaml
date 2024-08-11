@@ -52,6 +52,7 @@ services:
       context: services/inventory
     environment:
       - SERVICE_NAME=inventory-service
+      - INVENTORY_AVAILABILITY=1000
     depends_on:
       - warehouse-service
     networks:
@@ -65,6 +66,7 @@ services:
       context: services/warehouse
     environment:
       - SERVICE_NAME=warehouse-service
+      - INVENTORY_AVAILABILITY=1000
     networks:
       - traces
     labels: *default-labels

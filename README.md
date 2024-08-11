@@ -84,6 +84,15 @@ From the response of our request, we get a `trace_id`, when we use TraceQL in Ex
 
 ![image](https://github.com/user-attachments/assets/65a11ce1-efee-4c44-8060-88d72f0801f5)
 
+Since we are using `remote_write` in Tempo, we are writing metrics from Tempo to Prometheus, and we can access metrics such as http request rate from client to server:
+
+<img width="1340" alt="image" src="https://github.com/user-attachments/assets/b44ac3a1-596f-48ff-9351-c8ed30b37f51">
+
+Similarly, we can access the p90 percentile request latencies of requests using the request path `/api/order`:
+
+<img width="1336" alt="image" src="https://github.com/user-attachments/assets/999f8f26-deca-4f22-8d76-8bcd0a933b26">
+
+
 ## Extras
 
 With `span.set_attribute` we can enrich some of the visuals:
