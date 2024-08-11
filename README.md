@@ -3,6 +3,14 @@ Grafana Distributed Tracing Example with: Tempo, Prometheus, Loki, Grafana and P
 
 ![image](https://github.com/ruanbekker/grafana-tempo-loki-tracing/assets/567298/c0431d21-e7df-4d2b-a0f6-f1ed1f222eaf)
 
+## About
+
+This project showcases microservices architecture with distributed tracing powered by OpenTelemetry, integrated with Grafana Tempo. It also leverages derived fields in Grafana Loki to seamlessly link trace IDs to Tempo, providing a unified and smooth experience for viewing traces directly from logs.
+
+The request flow will look like the following:
+
+<img width="1063" alt="image" src="https://github.com/user-attachments/assets/396b44fb-eab2-4a11-83ff-53812cf15d75">
+
 ## Getting Started
 
 Boot the stack:
@@ -72,6 +80,10 @@ When we use the `order-service` container logs in Loki:
 
 <img width="1336" alt="image" src="https://github.com/user-attachments/assets/aaf41cc4-25fc-4943-a2b0-a69e083d0541">
 
+From the response of our request, we get a `trace_id`, when we use TraceQL in Explore to search for our trace id and we can see all the spans from the given trace:
+
+![image](https://github.com/user-attachments/assets/65a11ce1-efee-4c44-8060-88d72f0801f5)
+
 ## Extras
 
 With `span.set_attribute` we can enrich some of the visuals:
@@ -89,5 +101,4 @@ With `span.set_attribute` we can enrich some of the visuals:
 Produces:
 
 <img width="1234" alt="image" src="https://github.com/user-attachments/assets/15c5470b-dc3e-4db1-9bbd-419b0c0fe78c">
-
 
