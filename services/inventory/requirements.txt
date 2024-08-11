@@ -1,0 +1,12 @@
+Flask==2.2.5
+Flask_SQLAlchemy==3.0.3
+Werkzeug==2.2.2
+requests==2.31.0
+SQLAlchemy==2.0.32
+opentelemetry-api
+opentelemetry-sdk
+opentelemetry-instrumentation-flask
+opentelemetry-instrumentation-sqlalchemy
+opentelemetry-instrumentation-requests
+opentelemetry-exporter-jaeger
+opentelemetry-exporter-otlp
