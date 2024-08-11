@@ -3,7 +3,6 @@ import requests
 from flask import Flask, request, jsonify
 from opentelemetry import trace
 from opentelemetry.instrumentation.flask import FlaskInstrumentor
-from opentelemetry.instrumentation.sqlalchemy import SQLAlchemyInstrumentor
 from opentelemetry.instrumentation.requests import RequestsInstrumentor
 from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExporter
 from opentelemetry.sdk.trace.export import BatchSpanProcessor
@@ -34,7 +33,6 @@ trace.get_tracer_provider().add_span_processor(
 
 # Instrument Flask
 FlaskInstrumentor().instrument_app(app)
-SQLAlchemyInstrumentor().instrument()
 RequestsInstrumentor().instrument()
 
 # Order Service Routes
