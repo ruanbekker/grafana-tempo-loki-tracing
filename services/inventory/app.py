@@ -18,6 +18,7 @@ from opentelemetry.sdk.trace import TracerProvider
 TEMPO_HOSTNAME = os.getenv('TEMPO_HOSTNAME', 'tempo')
 TEMPO_PORT     = os.getenv('TEMPO_PORT', '4317')
 CHAOS_MONKEY_ENABLED = os.getenv('CHAOS_MONKEY_ENABLED', False)
+INVENTORY_AVAILABILITY = os.getenv('INVENTORY_AVAILABILITY', 100)
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////sqlite.db'
@@ -73,7 +74,7 @@ def inventory_check():
         trace_id_hex = format(trace_id, '032x')
 
         # Log the trace ID
-        app.logger.info(f"inventory-service about to make a database query. trace_id={trace_id_hex}")
+        app.logger.debug(f"inventory-service about to make a database query. trace_id={trace_id_hex}")
 
         with tracer.start_as_current_span("query_inventory_database") as span:
             inventory_item = Inventory.query.filter_by(id=item_id).first()
@@ -81,6 +82,7 @@ def inventory_check():
             span.set_attribute("db.query", sql_query)
             span.set_attribute("inventory.item_id", item_id)
             span.set_attribute("inventory.requested_quantity", quantity)
+            span.set_attribute("inventory.availability", inventory_item.availability)
 
             if inventory_item and inventory_item.availability >= quantity:
                 # Reduce the availability with the quantity amount
@@ -92,6 +94,7 @@ def inventory_check():
                 with tracer.start_as_current_span("inventory_to_warehouse_call") as span:
                     span.set_attribute("inventory.item_id", item_id)
                     span.set_attribute("inventory.requested_quantity", quantity)
+                    span.set_attribute("inventory.availability", inventory_item.availability)
                     warehouse_url = 'http://warehouse-service:5000/warehouse/reserve'
                     span.set_attribute("inventory.warehouse_url", warehouse_url)
 
@@ -135,7 +138,7 @@ if __name__ == '__main__':
         )
         db.session.execute(
             insert_query,
-            {"id": "sku001", "description": "test inventory", "availability": 10},
+            {"id": "sku001", "description": "test inventory", "availability": int(INVENTORY_AVAILABILITY)},
         )
         db.session.commit()
     app.run(debug=True, host='0.0.0.0', port=5000)
