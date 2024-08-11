@@ -86,7 +86,11 @@ def create_order():
                 # Handle inventory service response
                 if response.status_code != 200:
                     app.logger.error(f'Inventory check failed: {response.text}')
-                    return jsonify({"status": "failure", "message": "Inventory capacity failure"}), 400
+                    return jsonify({
+                        "status": "failure",
+                        "message": "Inventory capacity failure",
+                        "trace_id": trace_id_hex
+                    }), 400
 
             except requests.exceptions.RequestException as e:
                 app.logger.error(f"Error while calling inventory service: {e}")
@@ -140,7 +144,13 @@ def create_order():
                         else:
                             # Payment failed
                             app.logger.error(f'payment authorization error: {response.text}')
-                            return jsonify({"status": "failure", "message": "Payment authorization failed"}), 400
+                            app.logger.error(f'error_reason: {response.json()}')
+                            return jsonify({
+                                "status": "failure",
+                                "message": "Payment authorization failed",
+                                "category": response.json().get('category'),
+                                "trace_id": trace_id_hex
+                            }), 400
 
                 except requests.exceptions.RequestException as e:
                     http_span.set_attribute("http.error", str(e))
