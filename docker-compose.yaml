@@ -25,6 +25,9 @@ services:
     depends_on:
       - order-service
       - inventory-service
+      - payment-service
+      - warehouse-service
+      - fraud-service
     networks:
       - traces
     labels: *default-labels
@@ -49,6 +52,8 @@ services:
       context: services/inventory
     environment:
       - SERVICE_NAME=inventory-service
+    depends_on:
+      - warehouse-service
     networks:
       - traces
     labels: *default-labels
@@ -71,6 +76,22 @@ services:
       context: services/payment
     environment:
       - SERVICE_NAME=payment-service
+      - FRAUD_SERVICE_URL=http://fraud-service:5000
+    depends_on:
+      - fraud-service
+    networks:
+      - traces
+    labels: *default-labels
+    logging: *default-logging
+
+  fraud-service:
+    container_name: fraud-service
+    build:
+      context: services/fraud
+    environment:
+      - SERVICE_NAME=fraud-service
+      - FRAUD_PERCENTAGE=5
+      - NOT_FRAUD_PERCENTAGE=95
     networks:
       - traces
     labels: *default-labels
