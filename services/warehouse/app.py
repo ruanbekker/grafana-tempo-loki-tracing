@@ -18,6 +18,7 @@ from opentelemetry.sdk.trace import TracerProvider
 
 TEMPO_HOSTNAME = os.getenv('TEMPO_HOSTNAME', 'tempo')
 TEMPO_PORT     = os.getenv('TEMPO_PORT', '4317')
+INVENTORY_AVAILABILITY = os.getenv('INVENTORY_AVAILABILITY', 100)
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////sqlite.db'
@@ -110,7 +111,7 @@ def seed_warehouse_inventory():
                 id="sku001_warehouseA",
                 item_id="sku001",
                 warehouse_location="Warehouse-A",
-                available_quantity=10,
+                available_quantity=int(INVENTORY_AVAILABILITY),
                 reserved_quantity=0,
                 reservation_timestamp=None,
                 reservation_status=None
