@@ -8,31 +8,93 @@ x-logging:
     max-file: "1"
     tag: "{{.Name}}"
 
+x-labels:
+  &default-labels
+  logging: "promtail"
+  logging_jobname: "containerlogs"
+
 services:
+  api-gateway:
+    container_name: api-gateway
+    build:
+      context: services/api-gateway
+    environment:
+      - SERVICE_NAME=api-gateway
+    ports:
+      - 5000:5000
+    depends_on:
+      - order-service
+      - inventory-service
+      - payment-service
+      - warehouse-service
+      - fraud-service
+    networks:
+      - traces
+    labels: *default-labels
+    logging: *default-logging
+
   order-service:
     container_name: order-service
     build:
-      context: order_service
-    ports:
-      - 5001:5000
+      context: services/order
+    environment:
+      - SERVICE_NAME=order-service
+    depends_on:
+      - inventory-service
     networks:
       - traces
-    labels:
-      logging: "promtail"
-      logging_jobname: "containerlogs"
+    labels: *default-labels
+    logging: *default-logging
+
+  inventory-service:
+    container_name: inventory-service
+    build:
+      context: services/inventory
+    environment:
+      - SERVICE_NAME=inventory-service
+    depends_on:
+      - warehouse-service
+    networks:
+      - traces
+    labels: *default-labels
+    logging: *default-logging
+
+  warehouse-service:
+    container_name: warehouse-service
+    build:
+      context: services/warehouse
+    environment:
+      - SERVICE_NAME=warehouse-service
+    networks:
+      - traces
+    labels: *default-labels
     logging: *default-logging
 
   payment-service:
     container_name: payment-service
     build:
-      context: payment_service
-    ports:
-      - 5002:5000
+      context: services/payment
+    environment:
+      - SERVICE_NAME=payment-service
+      - FRAUD_SERVICE_URL=http://fraud-service:5000
+    depends_on:
+      - fraud-service
     networks:
       - traces
-    labels:
-      logging: "promtail"
-      logging_jobname: "containerlogs"
+    labels: *default-labels
+    logging: *default-logging
+
+  fraud-service:
+    container_name: fraud-service
+    build:
+      context: services/fraud
+    environment:
+      - SERVICE_NAME=fraud-service
+      - FRAUD_PERCENTAGE=5
+      - NOT_FRAUD_PERCENTAGE=95
+    networks:
+      - traces
+    labels: *default-labels
     logging: *default-logging
 
   grafana:
@@ -43,7 +105,7 @@ services:
     environment:
       - GF_AUTH_ANONYMOUS_ENABLED=true
       - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
-      - GF_USERS_DEFAULT_THEME=light
+      - GF_USERS_DEFAULT_THEME=dark
     volumes:
       - ./configs/grafana/datasources.yaml:/etc/grafana/provisioning/datasources/provisioning-datasources.yaml:ro
     depends_on:
